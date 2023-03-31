@@ -39,6 +39,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun startService() {
+        // check if the user has already granted
+        // the Draw over other apps permission
+        if (Settings.canDrawOverlays(this)) {
+            // start the service based on the android version
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(Intent(this, ForegroundService::class.java))
+            } else {
+                startService(Intent(this, ForegroundService::class.java))
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -69,11 +82,25 @@ class MainActivity : AppCompatActivity() {
                 alarmManager.setAlarmClock(info, pendingIntent2)
             }
 
+        findViewById<Button>(R.id.button2)
+            .setOnClickListener {
+                startService()
+            }
+
 
         if (!Settings.canDrawOverlays(this)) {
             val intent =
                 Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
             startActivity(intent, savedInstanceState)
         }
+
+        startService()
+    }
+
+    // check for permission again when user grants it from
+    // the device settings, and start the service
+    override fun onResume() {
+        super.onResume()
+//        startService()
     }
 }
