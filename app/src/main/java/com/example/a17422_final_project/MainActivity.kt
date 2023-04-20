@@ -91,12 +91,19 @@ class MainActivity : AppCompatActivity() {
                 }, 2000)
             }
 
+        findViewById<Button>(R.id.button3)
+            .setOnClickListener({
+                startActivity(Intent(this, StepActivity::class.java))
+            })
+
 
         if (!Settings.canDrawOverlays(this)) {
             val intent =
                 Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
             startActivity(intent, savedInstanceState)
         }
+
+
 
 //        startService()
     }

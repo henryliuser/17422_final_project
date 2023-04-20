@@ -32,6 +32,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".StepActivity"></activity>
+
         <receiver
         android:name="com.example.a17422_final_project.AlarmHandler"
         />
