@@ -11,7 +11,9 @@ class Accelerometer internal constructor(context: Context) {
     interface Listener {
         // create method with all 3
         // axis translation as argument
-        fun onTranslation(tx: Float, ty: Float, ts: Float)
+        fun onTranslation()
+
+//        fun onTranslation(tx : Float, ty : Float, ts: Float)
     }
 
     // create an instance
@@ -28,7 +30,8 @@ class Accelerometer internal constructor(context: Context) {
 
     init {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+//        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
 
         // create the sensor listener
         sensorEventListener = object : SensorEventListener {
@@ -39,10 +42,11 @@ class Accelerometer internal constructor(context: Context) {
                 // different from null
                 if (listener != null) {
                     // pass the three floats in listener on translation of axis
-                    listener!!.onTranslation(
-                        sensorEvent.values[0], sensorEvent.values[1],
-                        sensorEvent.values[2]
-                    )
+//                    listener!!.onTranslation(
+//                        sensorEvent.values[0], sensorEvent.values[1],
+//                        sensorEvent.values[2]
+//                    )
+                    listener!!.onTranslation()
                 }
             }
 

@@ -1,5 +1,7 @@
 package com.example.a17422_final_project
 
+import android.Manifest
+import android.R.string
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -12,6 +14,7 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -19,6 +22,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.a17422_final_project.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -103,6 +107,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent, savedInstanceState)
         }
 
+        requestPermissions(arrayOf<String>(Manifest.permission.ACTIVITY_RECOGNITION), 0)
+//        if (ContextCompat.CheckSelfPermission(
+//                this,
+//                Manifest.Permission.ActivityRecognition
+//            ) !== Permission.Granted as Int
+//        ) {
+//            RequestPermissions(arrayOf<string>(Manifest.Permission.ActivityRecognition), 0)
+//        }
 
 
 //        startService()
