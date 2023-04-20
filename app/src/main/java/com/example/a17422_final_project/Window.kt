@@ -2,10 +2,15 @@ package com.example.a17422_final_project
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.media.AudioAttributes
+import android.media.AudioAttributes.USAGE_ALARM
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.os.Build
 import android.util.Log
 import android.view.*
-import android.widget.LinearLayout
+import androidx.core.content.ContextCompat.getSystemService
+
 
 class Window(  // declaring required variables
     private val context: Context
@@ -15,6 +20,7 @@ class Window(  // declaring required variables
     private var mParams: WindowManager.LayoutParams? = null
     private val mWindowManager: WindowManager
     private val layoutInflater: LayoutInflater
+    var mPlayer: MediaPlayer
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -41,11 +47,23 @@ class Window(  // declaring required variables
         // window within the screen
         mParams!!.gravity = Gravity.CENTER
         mWindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        mPlayer = MediaPlayer.create(
+            context,
+            R.raw.alarm1,
+            AudioAttributes.Builder().
+                setUsage(USAGE_ALARM).
+                build(),
+            audioManager.generateAudioSessionId()
+        )
+        mPlayer.isLooping = true
+
     }
 
     fun open() {
         Log.d("asd", "open")
         try {
+
             if (mView == null) {
                 // inflating the view with the custom layout we created
                 mView = layoutInflater.inflate(R.layout.alarm, null)
@@ -60,6 +78,7 @@ class Window(  // declaring required variables
                     mWindowManager.addView(mView, mParams)
                 }
             }
+            mPlayer.start()
         } catch (e: Exception) {
             Log.d("Error1", e.toString())
         }
@@ -73,6 +92,7 @@ class Window(  // declaring required variables
             // invalidate the view
             mView!!.invalidate()
             mView = null
+            mPlayer.stop()
             // remove all views
 //            Log.d("asd", mView.toString())
 //            Log.d("asd", mView!!.parent.toString())
