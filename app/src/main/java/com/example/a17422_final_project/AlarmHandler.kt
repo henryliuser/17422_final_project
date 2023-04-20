@@ -4,12 +4,15 @@ import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_HIGH
 import androidx.core.app.NotificationManagerCompat
-
 class AlarmHandler : BroadcastReceiver() {
+
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("BUTTONS", "Alarm received")
         var builder = NotificationCompat.Builder(context, "1001")
@@ -21,6 +24,18 @@ class AlarmHandler : BroadcastReceiver() {
         with(NotificationManagerCompat.from(context)) {
             // notificationId is a unique int for each notification that you must define
             notify(1001, builder.build())
+        }
+
+
+        // check if the user has already granted
+        // the Draw over other apps permission
+        if (Settings.canDrawOverlays(context)) {
+            // start the service based on the android version
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(Intent(context, ForegroundService::class.java))
+            } else {
+                context.startService(Intent(context, ForegroundService::class.java))
+            }
         }
 
     }
