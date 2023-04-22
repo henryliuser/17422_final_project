@@ -5,6 +5,7 @@ import android.R.string
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.widget.Button
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
@@ -58,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -96,9 +99,14 @@ class MainActivity : AppCompatActivity() {
             }
 
         findViewById<Button>(R.id.button3)
-            .setOnClickListener({
+            .setOnClickListener {
                 startActivity(Intent(this, StepActivity::class.java))
-            })
+            }
+
+        findViewById<Button>(R.id.to_speech)
+            .setOnClickListener {
+                startActivity(Intent(this, SpeechTask::class.java))
+            }
 
 
         if (!Settings.canDrawOverlays(this)) {
@@ -107,23 +115,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent, savedInstanceState)
         }
 
-        requestPermissions(arrayOf<String>(Manifest.permission.ACTIVITY_RECOGNITION), 0)
-//        if (ContextCompat.CheckSelfPermission(
-//                this,
-//                Manifest.Permission.ActivityRecognition
-//            ) !== Permission.Granted as Int
-//        ) {
-//            RequestPermissions(arrayOf<string>(Manifest.Permission.ActivityRecognition), 0)
-//        }
 
 
-//        startService()
+
+
+
     }
 
-    // check for permission again when user grants it from
-    // the device settings, and start the service
-    override fun onResume() {
-        super.onResume()
-//        startService()
-    }
+
 }
