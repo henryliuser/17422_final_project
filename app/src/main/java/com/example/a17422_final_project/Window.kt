@@ -7,6 +7,7 @@ import android.media.AudioAttributes.USAGE_ALARM
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
+import android.os.PowerManager
 import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat.getSystemService
@@ -20,9 +21,15 @@ class Window(  // declaring required variables
     private var mParams: WindowManager.LayoutParams? = null
     private val mWindowManager: WindowManager
     private val layoutInflater: LayoutInflater
+    private val powerManager : PowerManager
+    private val wakeLock : PowerManager.WakeLock
     var mPlayer: MediaPlayer
 
     init {
+        powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
+            "alarm:turn the screen on")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // set the layout parameters of the window
             mParams = WindowManager.LayoutParams( // Shrink the window to wrap the content rather
@@ -30,9 +37,13 @@ class Window(  // declaring required variables
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,  // Display it on top of other application windows
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,  // Don't let it grab the input focus
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,  // Make the underlying application window visible
-                // through any transparent parts
-                PixelFormat.TRANSLUCENT
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                        or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                        or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON,
+
+                PixelFormat.TRANSLUCENT  // Make the underlying application window visible through any transparent parts
             )
         }
 //        mViewGroup = LinearLayout(this)
@@ -62,6 +73,7 @@ class Window(  // declaring required variables
 
     fun open() {
         Log.d("asd", "open")
+        wakeLock.acquire(300000)
         try {
 
             if (mView == null) {
@@ -82,9 +94,12 @@ class Window(  // declaring required variables
         } catch (e: Exception) {
             Log.d("Error1", e.toString())
         }
+        wakeLock.release()
     }
 
     fun close() {
+        if (wakeLock.isHeld)
+            wakeLock.release()
         try {
             Log.d("asd", "close")
             // remove the view from the window

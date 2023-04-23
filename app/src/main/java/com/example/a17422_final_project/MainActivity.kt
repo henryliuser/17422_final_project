@@ -3,9 +3,9 @@ package com.example.a17422_final_project
 import android.Manifest
 import android.R.string
 import android.app.*
+import android.app.AlarmManager.RTC_WAKEUP
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +16,6 @@ import android.util.Log
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -88,7 +87,9 @@ class MainActivity : AppCompatActivity() {
                 val intent2 = Intent(this, AlarmHandler::class.java)
                 val pendingIntent2 = PendingIntent.getBroadcast(this, 1001, intent2, PendingIntent.FLAG_IMMUTABLE)
 
-                alarmManager.setAlarmClock(info, pendingIntent2)
+//                alarmManager.setAlarmClock(info, pendingIntent2)
+//                alarmManager.setAlarmClock(info, )
+                alarmManager.set(RTC_WAKEUP, calendar.timeInMillis+2000, pendingIntent2)
             }
 
         findViewById<Button>(R.id.button2)
@@ -101,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button3)
             .setOnClickListener {
                 startActivity(Intent(this, StepActivity::class.java))
+                Log.d("after start activity", "step")
             }
 
         findViewById<Button>(R.id.to_speech)
@@ -117,7 +119,10 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
+        findViewById<Button>(R.id.newAlarm)
+            .setOnClickListener {
+                startActivity(Intent(this, ActivityAlarmSet::class.java))
+            }
 
 
     }

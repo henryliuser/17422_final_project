@@ -53,7 +53,7 @@ class ForegroundService : Service() {
         val chan = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
             channelName,
-            NotificationManager.IMPORTANCE_MIN
+            NotificationManager.IMPORTANCE_HIGH
         )
         val manager = (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
         manager.createNotificationChannel(chan)
@@ -63,7 +63,7 @@ class ForegroundService : Service() {
             .setContentText("Displaying over other apps") // this is important, otherwise the notification will show the way
             // you want i.e. it will show some default notification
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setPriority(NotificationManager.IMPORTANCE_MIN)
+            .setPriority(NotificationManager.IMPORTANCE_MAX)
             .setCategory(Notification.CATEGORY_SERVICE)
             .build()
         startForeground(2, notification)

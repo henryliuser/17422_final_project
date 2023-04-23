@@ -24,12 +24,11 @@ class SpeechTask : AppCompatActivity() {
 
     private val prompts = arrayOf (
         "how much wood would a woodchuck chuck if a woodchuck could chuck wood",
-        "peter piper picked a peck of pickled peppers how many pickled peppers did peter piper pick?",
+        "peter piper picked a peck of pickled peppers how many pickled peppers did peter piper pick",
         "frivolously fanciful fried fresh fish furiously",
-        "which witch switched the swiss wristwatches",
+        "which witch switched the swiss wrist watches",
         "she sells seashells by the seashore"
     )
-
 
     private lateinit var binding: TaskSpeechBinding
     private lateinit var bot : SpeechRecognizer
@@ -56,14 +55,13 @@ class SpeechTask : AppCompatActivity() {
 
             override fun onResults(p0: Bundle?) {
                 val data = p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                user_text.text = data?.get(0)
-                Log.d("speech", "onResults() " + data!!.get(0))
+                val input = data?.get(0)
+                user_text.text = input
+                Log.d("speech", "onResults() $input")
 
-                // process
-
-                if (user_text.text == prompt_text.text) {
+                if (input?.lowercase() == prompt_text.text) {
+                    prompt_text.text = "Correct!"
                     Handler(Looper.getMainLooper()).postDelayed({
-                        prompt_text.text = "Correct!"
                         finish()
                     }, 2000)
                 }
@@ -96,7 +94,6 @@ class SpeechTask : AppCompatActivity() {
                         bot.stopListening()
                     }
                     if (p1.action == MotionEvent.ACTION_DOWN) {
-
                         bot.startListening(speechIntent)
                     }
                     return false
