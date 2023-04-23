@@ -30,22 +30,27 @@ class Window(  // declaring required variables
         wakeLock = powerManager.newWakeLock(
             PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
             "alarm:turn the screen on")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // set the layout parameters of the window
-            mParams = WindowManager.LayoutParams( // Shrink the window to wrap the content rather
-                // than filling the screen
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,  // Display it on top of other application windows
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,  // Don't let it grab the input focus
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                        or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON,
+        val layoutType =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            else
+                WindowManager.LayoutParams.TYPE_TOAST
+        // set the layout parameters of the window
 
-                PixelFormat.TRANSLUCENT  // Make the underlying application window visible through any transparent parts
-            )
-        }
+        mParams = WindowManager.LayoutParams( // Shrink the window to wrap the content rather
+            // than filling the screen
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,  // Display it on top of other application windows
+            layoutType,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE  // Don't let it grab the input focus
+                    or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON,
+
+            PixelFormat.TRANSLUCENT  // Make the underlying application window visible through any transparent parts
+        )
+
 //        mViewGroup = LinearLayout(this)
         // getting a LayoutInflater
         layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

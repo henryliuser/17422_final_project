@@ -74,12 +74,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
-        android:layout_marginTop="95dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="150dp"
         android:layout_marginBottom="216dp"
         android:fontFamily="monospace"
         android:text="Set new alarm!"
-        android:textSize="34sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/weekdays"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/editTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
@@ -108,4 +108,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weekdays" />
+
+    <EditText
+        android:id="@+id/editName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Alarm Name"
+        tools:layout_editor_absoluteX="108dp"
+        tools:layout_editor_absoluteY="180dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

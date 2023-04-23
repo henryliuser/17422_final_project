@@ -40,7 +40,6 @@
         android:layout_marginTop="336dp"
         android:layout_marginEnd="25dp"
         android:fontFamily="monospace"
-        android:text="res"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,13 +47,15 @@
 
     <Button
         android:id="@+id/recordButton"
-        android:layout_width="167dp"
-        android:layout_height="173dp"
+        android:layout_width="140dp"
+        android:layout_height="120dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="372dp"
         android:layout_marginEnd="25dp"
+        android:layout_marginBottom="30dp"
         android:text="HOLD\nto\nRECORD"
-        android:textSize="24sp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructions" />
