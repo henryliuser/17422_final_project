@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +37,8 @@ class StepActivity : AppCompatActivity() {
         }
 
         mAccel = Accelerometer(this)
+        val progressBar : ProgressBar = findViewById(R.id.progressBar)
+        progressBar.max = 10 // TODO: set this to change based on the number of steps that the user wants to take
 
         // create a listener for accelerometer
         mAccel.setListener(object : Accelerometer.Listener {
@@ -52,8 +55,14 @@ class StepActivity : AppCompatActivity() {
             override fun onTranslation() {
                 steps++
                 val tv1: TextView = findViewById(R.id.stepCount)
-                tv1.text = steps.toString()
+                tv1.text = "Number of Steps Taken:" + steps.toString()
                 Log.d("step", steps.toString())
+                progressBar.progress = steps
+
+                if (steps == progressBar.max) {
+                    // TODO: fix this part to call the next activity that we want
+                }
+
             }
         })
     }
