@@ -99,7 +99,6 @@ class Window(  // declaring required variables
         } catch (e: Exception) {
             Log.d("Error1", e.toString())
         }
-        wakeLock.release()
     }
 
     fun close() {

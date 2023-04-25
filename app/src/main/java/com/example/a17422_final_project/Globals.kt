@@ -46,8 +46,7 @@ class Globals {
             val fileReader = FileReader(f)
             val fin = BufferedReader(fileReader)
             var sb = StringBuilder()
-            var lines = fin.readLines()
-            lines.forEach { s ->
+            fin.readLines().forEach { s ->
                 sb.append(s)
             }
             var globj = JSONObject(sb.toString())
@@ -61,6 +60,13 @@ class Globals {
                 alarms.put(a.name, a)
             }
             Log.d("readAlarms", alarms.toString())
+            logAlarms()
+        }
+
+        fun logAlarms() {
+            alarms.forEach { (k,v) ->
+                Log.d("alarm", k + ": {${Integer.toBinaryString(v.mask)} / ${v.hour}:${v.minute}}")
+            }
         }
 
         fun setAlarms() {

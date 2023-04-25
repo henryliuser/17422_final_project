@@ -84,13 +84,13 @@ class MainActivity : AppCompatActivity() {
                 val calendar = Calendar.getInstance()
                 val intent = Intent(this, AlarmHandler::class.java)
                 val pendingIntent = PendingIntent.getBroadcast(this, 1001, intent, PendingIntent.FLAG_IMMUTABLE)
-                val info = AlarmManager.AlarmClockInfo(calendar.timeInMillis + 2000, pendingIntent)
+                val info = AlarmManager.AlarmClockInfo(calendar.timeInMillis + 10000, pendingIntent)
                 val intent2 = Intent(this, AlarmHandler::class.java)
                 val pendingIntent2 = PendingIntent.getBroadcast(this, 1001, intent2, PendingIntent.FLAG_IMMUTABLE)
 
-//                alarmManager.setAlarmClock(info, pendingIntent2)
+                alarmManager.setAlarmClock(info, pendingIntent2)
 //                alarmManager.setAlarmClock(info, )
-                alarmManager.set(RTC_WAKEUP, calendar.timeInMillis+2000, pendingIntent2)
+//                alarmManager.setExact(RTC_WAKEUP, calendar.timeInMillis+2000, pendingIntent2)
             }
 
         findViewById<Button>(R.id.button2)
