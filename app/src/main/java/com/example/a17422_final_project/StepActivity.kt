@@ -8,6 +8,8 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -60,8 +62,10 @@ class StepActivity : AppCompatActivity() {
                 Log.d("step", steps.toString())
                 progressBar.progress = steps
 
-                if (steps == progressBar.max) {
-                    // TODO: fix this part to call the next activity that we want
+                if (steps >= progressBar.max) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        finish()
+                    }, 2000)
                 }
 
             }

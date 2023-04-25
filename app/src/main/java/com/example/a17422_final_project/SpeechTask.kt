@@ -27,7 +27,8 @@ class SpeechTask : AppCompatActivity() {
         "peter piper picked a peck of pickled peppers how many pickled peppers did peter piper pick",
         "frivolously fanciful fried fresh fish furiously",
         "which witch switched the swiss wrist watches",
-        "she sells seashells by the seashore"
+        "she sells seashells by the seashore",
+        "a b c d e f g h i j k l m n o p q r s t u v w x y z"
     )
 
     private lateinit var binding: TaskSpeechBinding
@@ -78,7 +79,10 @@ class SpeechTask : AppCompatActivity() {
 
         })
 
-        val i = Random.nextInt(5)
+        val i = Random.nextInt(6)
+        if (i == 5) {
+            // shuffled alphabet
+        }
         prompt_text.text = prompts[i]
 
 

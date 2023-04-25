@@ -26,7 +26,8 @@ fun getIntent(ctx : Context, t : TaskType, params : Bundle?): Intent {
 
 fun startTaskStack(ctx : Context, tasks : Array<TaskType>, params : Array<Bundle?>) {
     val tsb = TaskStackBuilder.create(ctx)
-    (tasks zip params).forEach { (t, p) ->
+    tsb.addNextIntent( Intent(ctx, MainActivity::class.java) )
+    (tasks zip params).reversed().forEach { (t, p) ->
         tsb.addNextIntent( getIntent(ctx, t, p) )
     }
     tsb.startActivities()

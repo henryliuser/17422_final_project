@@ -125,6 +125,13 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, ActivityAlarmSet::class.java))
             }
 
+        findViewById<Button>(R.id.chainTask)
+            .setOnClickListener {
+                val ts = arrayOf( TaskType.SPEECH, TaskType.STEPS )
+                val params: Array<Bundle?> = arrayOf( null, null )
+                startTaskStack(this, ts, params)
+            }
+
 
     }
 
