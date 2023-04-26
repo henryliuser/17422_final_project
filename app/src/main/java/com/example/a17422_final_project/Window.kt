@@ -20,7 +20,6 @@ class Window(  // declaring required variables
     private val context: Context
 ) {
     private var mView: View?
-//    private var mViewGroup: ViewGroup
     private var mParams: WindowManager.LayoutParams? = null
     private val mWindowManager: WindowManager
     private val layoutInflater: LayoutInflater

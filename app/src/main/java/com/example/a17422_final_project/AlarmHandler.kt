@@ -31,15 +31,7 @@ class AlarmHandler : BroadcastReceiver() {
 
         // check if the user has already granted
         // the Draw over other apps permission
-        if (Settings.canDrawOverlays(context)) {
-            // start the service based on the android version
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(Intent(context, ForegroundService::class.java))
-            } else {
-                context.startService(Intent(context, ForegroundService::class.java))
-            }
-        }
-
+        ForegroundService.start(context)
     }
 
 }

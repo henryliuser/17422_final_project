@@ -37,11 +37,11 @@
         tools:layout_editor_absoluteX="138dp" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/postDelayed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
-        android:text="display"
+        android:text="postdelayed"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="41dp" />
 

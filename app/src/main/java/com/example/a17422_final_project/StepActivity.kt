@@ -37,7 +37,7 @@ class StepActivity : AppCompatActivity() {
                 Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED)
         {
             Log.d("perms", "activity_recognition")
-            requestPermissions(arrayOf<String>(Manifest.permission.ACTIVITY_RECOGNITION), 0)
+            requestPermissions(arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), 0)
         }
 
         val params = JSONObject(intent.getStringExtra("params")!!)

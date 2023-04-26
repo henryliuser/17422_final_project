@@ -1,9 +1,6 @@
 package com.example.a17422_final_project
 
-import android.Manifest
-import android.R.string
 import android.app.*
-import android.app.AlarmManager.RTC_WAKEUP
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -14,17 +11,10 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.widget.Button
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.a17422_final_project.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.json.JSONObject
 import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,19 +34,6 @@ class MainActivity : AppCompatActivity() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    fun startService() {
-        // check if the user has already granted
-        // the Draw over other apps permission
-        if (Settings.canDrawOverlays(this)) {
-            // start the service based on the android version
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(Intent(this, ForegroundService::class.java))
-            } else {
-                startService(Intent(this, ForegroundService::class.java))
-            }
         }
     }
 
@@ -83,10 +60,10 @@ class MainActivity : AppCompatActivity() {
                 alarmManager.setAlarmClock(info, pendingIntent2)
             }
 
-        findViewById<Button>(R.id.button2)
+        findViewById<Button>(R.id.postDelayed)
             .setOnClickListener {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    startService()
+                    ForegroundService.start(this)
                 }, 2000)
             }
 

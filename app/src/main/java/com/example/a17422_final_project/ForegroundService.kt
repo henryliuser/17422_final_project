@@ -4,9 +4,11 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.provider.Settings
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -67,5 +69,20 @@ class ForegroundService : Service() {
             .setCategory(Notification.CATEGORY_SERVICE)
             .build()
         startForeground(2, notification)
+    }
+
+    companion object {
+        fun start(ctx : Context) {
+            // check if the user has already granted
+            // the Draw over other apps permission
+            if (Settings.canDrawOverlays(ctx)) {
+                // start the service based on the android version
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ctx.startForegroundService(Intent(ctx, ForegroundService::class.java))
+                } else {
+                    ctx.startService(Intent(ctx, ForegroundService::class.java))
+                }
+            }
+        }
     }
 }

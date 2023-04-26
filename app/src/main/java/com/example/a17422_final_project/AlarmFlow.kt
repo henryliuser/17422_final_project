@@ -3,7 +3,10 @@ package com.example.a17422_final_project
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 
 /// TODO: strat is get the entire thing working in memory first. then persist it
@@ -19,12 +22,12 @@ import org.json.JSONObject
 /// TODO LATER: deal with multiple alarms attempting to ring at same time? queue?
 
 class Task(val type : TaskType, val timeLimit : Int, val params : JSONObject) {
-
     fun makeIntent(ctx : Context): Intent {
         val intent = when (type) {
             TaskType.STEPS  -> Intent(ctx, StepActivity::class.java)
             TaskType.SPEECH -> Intent(ctx, SpeechTask::class.java)
         }
+        intent.putExtra("timeLimit", timeLimit)
         return intent.putExtra("params", params.toString())
     }
 
@@ -69,6 +72,23 @@ class Check(val task : Task) {
         c.isExact = obj.getBoolean("isExact")
         return c
     }}
+}
+
+class Timer {
+
+    var go = {} as Runnable
+
+    fun start(ctx : Context, timeLimit : Int) {
+        go = {
+            ForegroundService.start(ctx)
+            start(ctx, timeLimit)
+        } as Runnable
+
+        Handler(Looper.getMainLooper()).postDelayed(go, timeLimit * 1000L)
+    }
+    fun stop() {
+        Handler(Looper.getMainLooper()).removeCallbacks(go)
+    }
 }
 
 class Alarm {
@@ -128,4 +148,14 @@ class Alarm {
         a.armed = obj.getBoolean("armed")
         return a
     }}
+}
+
+interface TaskActivity {
+    val timer: Timer
+    fun init(ctx : Content, intent : Intent) {
+        timer.start(intent.getIntExtra("timeLimit"))
+
+    }
+
+    fun
 }
