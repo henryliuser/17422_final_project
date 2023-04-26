@@ -22,6 +22,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.a17422_final_project.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.json.JSONObject
 import java.util.*
 
 
@@ -59,23 +60,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Globals.readAlarms(applicationContext)
+//        Globals.readAlarms(applicationContext)
+        /// TODO: uncomment
 
-        val navView: BottomNavigationView = binding.navView
-
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
         createNotificationChannel("alarms", "alarms")
         findViewById<Button>(R.id.button)
             .setOnClickListener {
@@ -89,8 +81,6 @@ class MainActivity : AppCompatActivity() {
                 val pendingIntent2 = PendingIntent.getBroadcast(this, 1001, intent2, PendingIntent.FLAG_IMMUTABLE)
 
                 alarmManager.setAlarmClock(info, pendingIntent2)
-//                alarmManager.setAlarmClock(info, )
-//                alarmManager.setExact(RTC_WAKEUP, calendar.timeInMillis+2000, pendingIntent2)
             }
 
         findViewById<Button>(R.id.button2)
@@ -118,8 +108,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent, savedInstanceState)
         }
 
-
-
         findViewById<Button>(R.id.newAlarm)
             .setOnClickListener {
                 startActivity(Intent(this, ActivityAlarmSet::class.java))
@@ -127,12 +115,14 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.chainTask)
             .setOnClickListener {
-                val ts = arrayOf( TaskType.SPEECH, TaskType.STEPS )
-                val params: Array<Bundle?> = arrayOf( null, null )
-                startTaskStack(this, ts, params)
+                val stepParams = JSONObject()
+                stepParams.put("numSteps", 25)
+                val tasks = arrayOf(
+                    Task( TaskType.STEPS, stepParams ),
+                    Task( TaskType.SPEECH, JSONObject() )
+                )
+                startTaskStack(this, tasks.asIterable())
             }
-
-
     }
 
 

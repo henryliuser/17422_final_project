@@ -16,19 +16,17 @@ enum class TaskType(val key: Int) {
     }
 }
 
-fun getIntent(ctx : Context, t : TaskType, params : Bundle?): Intent {
-    val intent = when (t) {
-        TaskType.STEPS  -> Intent(ctx, StepActivity::class.java)
-        TaskType.SPEECH -> Intent(ctx, SpeechTask::class.java)
-    }
-    return intent.putExtra("params", params)
-}
+//interface Task {
+//    fun setup()  // initialize with parameters
+//    fun teardown()  // task completed
+//
+//}
 
-fun startTaskStack(ctx : Context, tasks : Array<TaskType>, params : Array<Bundle?>) {
+fun startTaskStack(ctx : Context, tasks : Iterable<Task>) {
     val tsb = TaskStackBuilder.create(ctx)
     tsb.addNextIntent( Intent(ctx, MainActivity::class.java) )
-    (tasks zip params).reversed().forEach { (t, p) ->
-        tsb.addNextIntent( getIntent(ctx, t, p) )
+    tasks.reversed().forEach { t ->
+        tsb.addNextIntent( t.makeIntent(ctx) )
     }
     tsb.startActivities()
 }

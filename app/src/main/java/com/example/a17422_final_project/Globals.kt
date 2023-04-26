@@ -1,6 +1,9 @@
 package com.example.a17422_final_project
 
+import android.app.AlarmManager
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -8,28 +11,19 @@ import java.io.BufferedWriter
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.util.TreeMap
 
-
-class Alarm {
-    var name   : String = ""
-    var mask   : Int = 0
-    var hour   : Int = 0
-    var minute : Int = 0
-}
+/// TODO: json serialization code, use JSONArray
+/// TODO: write on quit instead of with every arm/disarm?
 
 class Globals {
     companion object {
-        var alarms = HashMap<String, Alarm>()
+        var alarms = TreeMap<String, Alarm>()  // deterministic alphabetical order
 
         fun writeAlarms(ctx : Context) {
             var globj = JSONObject()
             alarms.forEach { (key, alarm) ->
-                var obj = JSONObject()
-                obj.put("name", alarm.name)
-                obj.put("mask", alarm.mask)
-                obj.put("hour", alarm.hour)
-                obj.put("minute", alarm.minute)
-                globj.put(key, obj)
+                globj.put(key, alarm.toJSON())
             }
             val f = File(ctx.filesDir, "alarms.json")
             val userString: String = globj.toString()
@@ -51,13 +45,9 @@ class Globals {
             }
             var globj = JSONObject(sb.toString())
             globj.keys().forEach { s ->
-                var obj = globj.get(s) as JSONObject
-                var a = Alarm()
-                a.name = obj.get("name") as String
-                a.mask = obj.get("mask") as Int
-                a.hour = obj.get("hour") as Int
-                a.minute = obj.get("minute") as Int
-                alarms.put(a.name, a)
+                var obj = globj.getJSONObject(s)
+                val a = Alarm.fromJSON(obj)
+                alarms[a.name] = a
             }
             Log.d("readAlarms", alarms.toString())
             logAlarms()
@@ -67,10 +57,6 @@ class Globals {
             alarms.forEach { (k,v) ->
                 Log.d("alarm", k + ": {${Integer.toBinaryString(v.mask)} / ${v.hour}:${v.minute}}")
             }
-        }
-
-        fun setAlarms() {
-
         }
     }
 }

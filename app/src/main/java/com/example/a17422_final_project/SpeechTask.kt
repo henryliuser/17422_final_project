@@ -36,6 +36,18 @@ class SpeechTask : AppCompatActivity() {
     private lateinit var prompt_text : TextView
     private lateinit var user_text : TextView
 
+    fun checkCorrect(s : String, t : String) : Boolean {
+        val sa = s.split("\\s".toRegex()).toTypedArray()
+        val ta = t.split("\\s".toRegex()).toTypedArray()
+        if (sa.size != ta.size) return false
+        var mismatch = 0
+        (sa zip ta).forEach { (a,b) ->
+            if (a != b)
+                mismatch += 1
+        }
+        return mismatch <= 1
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TaskSpeechBinding.inflate(layoutInflater)
@@ -60,11 +72,11 @@ class SpeechTask : AppCompatActivity() {
                 user_text.text = input
                 Log.d("speech", "onResults() $input")
 
-                if (input?.lowercase() == prompt_text.text) {
+                if (checkCorrect(input!!.lowercase(), prompt_text.text.toString())) {
                     prompt_text.text = "Correct!"
                     Handler(Looper.getMainLooper()).postDelayed({
                         finish()
-                    }, 2000)
+                    }, 1500)
                 }
             }
 
@@ -80,11 +92,13 @@ class SpeechTask : AppCompatActivity() {
         })
 
         val i = Random.nextInt(6)
-        if (i == 5) {
-            // shuffled alphabet
-        }
         prompt_text.text = prompts[i]
-
+        if (i == 5) {  /// TODO: shuffle alphabet
+            // shuffled alphabet
+            val c = prompts[i].toCharArray()
+            c.shuffle()
+            prompt_text.text = c.toString()
+        }
 
         val speechIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)

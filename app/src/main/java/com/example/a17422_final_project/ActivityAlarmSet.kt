@@ -67,18 +67,18 @@ class ActivityAlarmSet : AppCompatActivity() {
 
     fun save() {
         // write to json
-        val name : String = nameEdit.text.toString()
-        if (Globals.alarms.containsKey(name)) {
-            val msg = Snackbar.make(binding.root, "Please choose a unique name", Snackbar.LENGTH_SHORT)
-            msg.show()
-            return
-        }
-        var a = Alarm()
-        a.name = name
-        a.mask = weekdayMask
-        a.hour = hr
-        a.minute = min
-        Globals.alarms[name] = a
-        Globals.writeAlarms(applicationContext)  // O(N) write every time, whatever. seems safer than write on exit.
+//        val name : String = nameEdit.text.toString()
+//        if (Globals.alarms.containsKey(name)) {
+//            val msg = Snackbar.make(binding.root, "Please choose a unique name", Snackbar.LENGTH_SHORT)
+//            msg.show()
+//            return
+//        }
+//        var a = Alarm()
+//        a.name = name
+//        a.mask = weekdayMask
+//        a.hour = hr
+//        a.minute = min
+//        Globals.alarms[name] = a
+//        Globals.writeAlarms(applicationContext)  // O(N) write every time, whatever. seems safer than write on exit.
     }
 }

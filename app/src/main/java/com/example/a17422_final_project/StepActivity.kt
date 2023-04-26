@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.a17422_final_project.databinding.ActivityStepBinding
+import org.json.JSONObject
 
 
 class StepActivity : AppCompatActivity() {
@@ -39,9 +40,12 @@ class StepActivity : AppCompatActivity() {
             requestPermissions(arrayOf<String>(Manifest.permission.ACTIVITY_RECOGNITION), 0)
         }
 
+        val params = JSONObject(intent.getStringExtra("params")!!)
         mAccel = Accelerometer(this)
         val progressBar : ProgressBar = findViewById(R.id.progressBar)
-        progressBar.max = 10 // TODO: set this to change based on the number of steps that the user wants to take
+        progressBar.max = 15
+        if (params.has("numSteps"))
+            progressBar.max = params.getInt("numSteps")
 
         // create a listener for accelerometer
         mAccel.setListener(object : Accelerometer.Listener {
@@ -58,14 +62,15 @@ class StepActivity : AppCompatActivity() {
             override fun onTranslation() {
                 steps++
                 val tv1: TextView = findViewById(R.id.stepCount)
-                tv1.text = "Number of Steps Taken:" + steps.toString()
+                tv1.text = "Number of Steps Taken: $steps"
                 Log.d("step", steps.toString())
                 progressBar.progress = steps
 
                 if (steps >= progressBar.max) {
+                    tv1.text = "Done!"
                     Handler(Looper.getMainLooper()).postDelayed({
                         finish()
-                    }, 2000)
+                    }, 1500)
                 }
 
             }
