@@ -118,8 +118,8 @@ class MainActivity : AppCompatActivity() {
                 val stepParams = JSONObject()
                 stepParams.put("numSteps", 25)
                 val tasks = arrayOf(
-                    Task( TaskType.STEPS, stepParams ),
-                    Task( TaskType.SPEECH, JSONObject() )
+                    Task( TaskType.STEPS, 15, stepParams ),
+                    Task( TaskType.SPEECH, 15, JSONObject() )
                 )
                 startTaskStack(this, tasks.asIterable())
             }

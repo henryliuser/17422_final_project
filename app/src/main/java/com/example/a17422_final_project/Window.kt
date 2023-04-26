@@ -7,10 +7,13 @@ import android.media.AudioAttributes.USAGE_ALARM
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat.getSystemService
+import org.json.JSONObject
 
 
 class Window(  // declaring required variables
@@ -112,14 +115,10 @@ class Window(  // declaring required variables
             mView!!.invalidate()
             mView = null
             mPlayer.stop()
-            // remove all views
-//            Log.d("asd", mView.toString())
-//            Log.d("asd", mView!!.parent.toString())
-//            (mView!!.parent as ViewGroup).removeAllViews()
-//            mView = null
 
-            // the above steps are necessary when you are adding and removing
-            // the view simultaneously, it might give some exceptions
+            /// TODO: lookup alarm, via intent, and ring it
+            /// TODO: loop this activity https://stackoverflow.com/questions/7407242/how-to-cancel-handler-postdelayed
+
         } catch (e: Exception) {
             Log.d("Error2", e.toString())
         }

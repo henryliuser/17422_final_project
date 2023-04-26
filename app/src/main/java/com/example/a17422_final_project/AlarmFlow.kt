@@ -6,6 +6,9 @@ import android.content.Intent
 import android.util.Log
 import org.json.JSONObject
 
+/// TODO: strat is get the entire thing working in memory first. then persist it
+/// TODO: once the api is good and working.
+
 /// TODO: arraylist to jsonarray
 /// TODO: timeLimit for task
 /// TODO: on timelimit expire, drawOverOtherApps for another ring then dismiss button.
@@ -15,7 +18,7 @@ import org.json.JSONObject
 
 /// TODO LATER: deal with multiple alarms attempting to ring at same time? queue?
 
-class Task(val type : TaskType, val params : JSONObject) {
+class Task(val type : TaskType, val timeLimit : Int, val params : JSONObject) {
 
     fun makeIntent(ctx : Context): Intent {
         val intent = when (type) {
@@ -28,14 +31,16 @@ class Task(val type : TaskType, val params : JSONObject) {
     fun toJSON() : JSONObject {
         val obj = JSONObject()
         obj.put("type", type.key)
+        obj.put("timeLimit", timeLimit)
         obj.put("params", params)
         return obj
     }
 
     companion object { fun fromJSON(obj : JSONObject) : Task {
         val otype = TaskType[obj.getInt("type")]
+        val limit = obj.getInt("timeLimit")
         val params = obj.getJSONObject("params")
-        return Task(otype, params)
+        return Task(otype, limit, params)
     }}
 
 }

@@ -49,16 +49,6 @@ class StepActivity : AppCompatActivity() {
 
         // create a listener for accelerometer
         mAccel.setListener(object : Accelerometer.Listener {
-            //on translation method of accelerometer
-//            override fun onTranslation(tx: Float, ty: Float, ts: Float) {
-//                // set the color red if the device moves in positive x axis
-//                Log.d("accelerometer", "[%6.3f, %6.3f, %6.3f]".format(tx, ty, ts))
-//                if (tx > 1.0f) {
-//                    window.decorView.setBackgroundColor(Color.RED)
-//                } else if (tx < -1.0f) {
-//                    window.decorView.setBackgroundColor(Color.BLUE)
-//                }
-//            }
             override fun onTranslation() {
                 steps++
                 val tv1: TextView = findViewById(R.id.stepCount)
@@ -86,7 +76,4 @@ class StepActivity : AppCompatActivity() {
         mAccel.unregister()
     }
 
-//    override fun onBackInvoke() {
-//        super.onBackPressed()
-//    }
 }
