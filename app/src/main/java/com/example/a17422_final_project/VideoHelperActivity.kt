@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.*
 import android.media.Image
 import android.os.Bundle
+import android.util.Log
 import android.view.Surface
 import android.view.View
 import android.widget.TextView
@@ -62,10 +63,13 @@ abstract class VideoHelperActivity : AppCompatActivity() {
         cameraProviderFuture = ProcessCameraProvider.getInstance(applicationContext)
         processor = setProcessor()
 
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA
-            )
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("test", "don't have permission, getting it")
+            requestPermissions(arrayOf<String>(Manifest.permission.CAMERA), 1001 ) //REQUEST_CAMERA
+            Log.d("test", "got permission")
+//            initSource()// TODO: I added this
         } else {
+            Log.d("test", "already have permission")
             initSource()
         }
 
@@ -83,8 +87,10 @@ abstract class VideoHelperActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        Log.d("test", "in onReqestPermissionResult" + PackageManager.PERMISSION_GRANTED.toString())
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.d("test", "permissions granted, going to init source now")
             initSource()
         }
     }
@@ -94,6 +100,7 @@ abstract class VideoHelperActivity : AppCompatActivity() {
     }
 
     private fun initSource() {
+        Log.d("test", "in init source")
         cameraProviderFuture!!.addListener({
             try {
                 val cameraProvider: ProcessCameraProvider = cameraProviderFuture!!.get()
@@ -195,11 +202,11 @@ abstract class VideoHelperActivity : AppCompatActivity() {
     }
 
     protected val lensFacing: Int
-        protected get() = CameraSelector.LENS_FACING_BACK
+        protected get() = CameraSelector.LENS_FACING_FRONT
 
     protected abstract fun setProcessor(): VisionBaseProcessor<PoseDetectorProcessor.PoseWithClassification?>
     fun makeAddFaceVisible() {
-        addFaceButton!!.visibility = View.VISIBLE
+        addFaceButton!!.visibility = 1 //View.VISIBLE
     }
 
     fun onAddFaceClicked(view: View?) {}
