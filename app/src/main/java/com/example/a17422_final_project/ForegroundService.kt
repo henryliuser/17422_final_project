@@ -21,6 +21,7 @@ class ForegroundService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
         Log.d("asd", "onCreate")
         // create the custom or default notification
         // based on the android version
@@ -39,8 +40,11 @@ class ForegroundService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Log.d("asd", "onStart$intent")
-        val window = Window(this)
+        Log.d("asd", "onStart${intent.extras}")
+        fun callback() {
+
+        }
+        val window = Window(this, ::callback)
         window.open()
         return super.onStartCommand(intent, flags, startId)
     }

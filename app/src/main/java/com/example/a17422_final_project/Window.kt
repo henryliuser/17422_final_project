@@ -17,7 +17,8 @@ import org.json.JSONObject
 
 
 class Window(  // declaring required variables
-    private val context: Context
+    private val context: Context,
+    private val callback : () -> Unit
 ) {
     private var mView: View?
     private var mParams: WindowManager.LayoutParams? = null
@@ -114,6 +115,7 @@ class Window(  // declaring required variables
             mView!!.invalidate()
             mView = null
             mPlayer.stop()
+            callback()
 
             /// TODO: lookup alarm, via intent, and ring it
             /// TODO: loop this activity https://stackoverflow.com/questions/7407242/how-to-cancel-handler-postdelayed

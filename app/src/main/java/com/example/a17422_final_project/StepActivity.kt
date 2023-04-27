@@ -20,18 +20,16 @@ import com.example.a17422_final_project.databinding.ActivityStepBinding
 import org.json.JSONObject
 
 
-class StepActivity : AppCompatActivity() {
+class StepActivity : AppCompatActivity(), TaskActivity {
 
     private lateinit var mAccel : Accelerometer
     private lateinit var binding: ActivityStepBinding
     private var steps : Int = 0
 
+    override val timer = Timer()
+    override lateinit var params : JSONObject
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityStepBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun getPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED)
@@ -39,6 +37,14 @@ class StepActivity : AppCompatActivity() {
             Log.d("perms", "activity_recognition")
             requestPermissions(arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), 0)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityStepBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        init(this, intent)
 
         val params = JSONObject(intent.getStringExtra("params")!!)
         mAccel = Accelerometer(this)
@@ -59,6 +65,7 @@ class StepActivity : AppCompatActivity() {
                 if (steps >= progressBar.max) {
                     tv1.text = "Done!"
                     Handler(Looper.getMainLooper()).postDelayed({
+                        destroy()
                         finish()
                     }, 1500)
                 }

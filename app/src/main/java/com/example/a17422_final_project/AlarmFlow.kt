@@ -3,6 +3,7 @@ package com.example.a17422_final_project
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -75,19 +76,16 @@ class Check(val task : Task) {
 }
 
 class Timer {
-
-    var go = {} as Runnable
-
-    fun start(ctx : Context, timeLimit : Int) {
-        go = {
+    fun start(ctx : Context, intent : Intent, timeLimit : Int) {
+        Handler(Looper.getMainLooper()).postDelayed( {
+            intent.flags = FLAG_ACTIVITY_REORDER_TO_FRONT
+            ctx.startActivity(intent)
             ForegroundService.start(ctx)
-            start(ctx, timeLimit)
-        } as Runnable
-
-        Handler(Looper.getMainLooper()).postDelayed(go, timeLimit * 1000L)
+            start(ctx, intent, timeLimit)
+        }, timeLimit * 1000L )
     }
     fun stop() {
-        Handler(Looper.getMainLooper()).removeCallbacks(go)
+        Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
     }
 }
 
@@ -151,11 +149,18 @@ class Alarm {
 }
 
 interface TaskActivity {
-    val timer: Timer
-    fun init(ctx : Content, intent : Intent) {
-        timer.start(intent.getIntExtra("timeLimit"))
+    val timer : Timer
+    var params : JSONObject
 
+    abstract fun getPermissions()
+    fun init(ctx : Context, intent : Intent) {
+        Log.d("init TaskActivity", "$ctx | ${intent.extras}")
+        this.getPermissions()
+        timer.start(ctx, intent, intent.getIntExtra("timeLimit", 15))
+        params = JSONObject( intent.getStringExtra("params")!! )
     }
 
-    fun
+    fun destroy() {
+        timer.stop()
+    }
 }
