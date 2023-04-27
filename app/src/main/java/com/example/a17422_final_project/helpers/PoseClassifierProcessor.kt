@@ -6,6 +6,7 @@ import android.media.ToneGenerator
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.example.a17422_final_project.R
 import com.google.common.base.Preconditions
 import com.google.mlkit.vision.pose.Pose
 import java.io.BufferedReader
@@ -56,7 +57,14 @@ class PoseClassifierProcessor @WorkerThread constructor(context: Context, isStre
         val poseSamples: MutableList<PoseSample> = ArrayList()
         try {
             val reader = BufferedReader(
-                InputStreamReader(context.assets.open(POSE_SAMPLES_FILE))
+//                InputStreamReader(context.assets.open(POSE_SAMPLES_FILE))
+                    InputStreamReader(
+                        context.resources.openRawResource(
+                            R.raw.fitness_pose_samples
+                        )
+//                InputStream ins = getResources().openRawResource(
+//                    getResources().getIdentifier("FILENAME_WITHOUT_EXTENSION",
+//                        "raw", getPackageName()));
             )
             var csvLine = reader.readLine()
             while (csvLine != null) {
@@ -72,7 +80,9 @@ class PoseClassifierProcessor @WorkerThread constructor(context: Context, isStre
                 TAG,
                 "Error when loading pose samples.\n$e"
             )
+            throw Exception()
         }
+        Log.d("samples:", poseSamples.toString())
         poseClassifier = PoseClassifier(poseSamples)
         if (isStreamMode) {
             for (className in POSE_CLASSES) {
@@ -95,6 +105,7 @@ class PoseClassifierProcessor @WorkerThread constructor(context: Context, isStre
         Preconditions.checkState(Looper.myLooper() != Looper.getMainLooper())
         val result: MutableList<String?> = ArrayList()
         var classification = poseClassifier!!.classify(pose)
+        Log.d("classify()", classification.toString())
 
         // Update {@link RepetitionCounter}s if {@code isStreamMode}.
         if (isStreamMode) {
@@ -116,6 +127,7 @@ class PoseClassifierProcessor @WorkerThread constructor(context: Context, isStre
                     lastRepResult = String.format(
                         Locale.US, "%s : %d reps", repCounter.className, repsAfter
                     )
+                    Log.d("reps", lastRepResult!!)
                     break
                 }
             }
@@ -138,7 +150,7 @@ class PoseClassifierProcessor @WorkerThread constructor(context: Context, isStre
 
     companion object {
         private const val TAG = "PoseClassifierProcessor"
-        private const val POSE_SAMPLES_FILE = "pose/fitness_pose_samples.csv"
+        private const val POSE_SAMPLES_FILE = "res/raw/fitness_pose_samples.csv"
 
         // Specify classes for which we want rep counting.
         // These are the labels in the given {@code POSE_SAMPLES_FILE}. You can set your own class labels

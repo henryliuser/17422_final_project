@@ -24,7 +24,7 @@ class ExerciseTask : VideoHelperActivity() {
                     true,
                     false,
                     false,
-                    false,
+                    true,
                     true,
                     this,
                     it,

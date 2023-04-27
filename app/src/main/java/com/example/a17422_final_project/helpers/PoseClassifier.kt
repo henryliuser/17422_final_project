@@ -16,6 +16,7 @@ package com.example.a17422_final_project.helpers
  * limitations under the License.
  */
 
+import android.util.Log
 import android.util.Pair
 import com.example.a17422_final_project.helpers.PoseEmbedding.getPoseEmbedding
 import com.example.a17422_final_project.helpers.Utils.maxAbs
@@ -85,6 +86,7 @@ class PoseClassifier @JvmOverloads constructor(
             )
         }
         // Retrieve top K poseSamples by least distance to remove outliers.
+        Log.d("poseSamples", poseSamples.toString())
         for (poseSample in poseSamples) {
             val sampleEmbedding = poseSample.embedding
             var originalMax = 0f
@@ -145,6 +147,7 @@ class PoseClassifier @JvmOverloads constructor(
         }
         for (sampleDistances in meanDistances) {
             val className = sampleDistances.first.className
+            Log.d("incrementClassConfidence", "hello")
             result.incrementClassConfidence(className)
         }
         return result

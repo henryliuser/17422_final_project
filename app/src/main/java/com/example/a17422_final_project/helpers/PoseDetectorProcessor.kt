@@ -85,10 +85,10 @@ class PoseDetectorProcessor(
                 }
                 PoseWithClassification(pose, classificationResult as List<String>)
             }.addOnSuccessListener { poseWithClassification ->
-                Log.d(
-                    TAG,
-                    "on Success for pose detector"
-                )
+//                Log.d(
+//                    TAG,
+//                    "on Success for pose detector"
+//                )
                 onSuccessPoseClassified(poseWithClassification, width, height)
             }.addOnFailureListener { e ->
                 Log.e(
