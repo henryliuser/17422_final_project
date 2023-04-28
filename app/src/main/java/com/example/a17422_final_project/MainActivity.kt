@@ -96,6 +96,12 @@ class MainActivity : AppCompatActivity() {
                 Log.d("after start activity", "step")
             }
 
+        findViewById<Button>(R.id.button4)
+            .setOnClickListener {
+                startActivity(Intent(this, ScanActivity::class.java))
+                Log.d("after start activity", "scan")
+            }
+
         findViewById<Button>(R.id.to_speech)
             .setOnClickListener {
                 startActivity(Intent(this, SpeechTask::class.java))
