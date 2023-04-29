@@ -7,6 +7,7 @@
     <uses-feature
         android:name="android.hardware.sensor.stepdetector"
         android:required="true" />
+    <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -14,8 +15,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -30,6 +31,11 @@
             android:name=".VideoHelperActivity"
             android:exported="false"
             android:label="@string/title_activity_video_helper"
+        />
+        <activity
+            android:name=".ScanActivity"
+            android:exported="false"
+            android:label="@string/title_activity_scan"
             android:theme="@style/Theme.17422_final_project.NoActionBar" />
 
         <service
