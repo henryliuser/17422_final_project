@@ -5,8 +5,10 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
+import android.view.Surface.ROTATION_90
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
@@ -33,9 +35,15 @@ class ScanActivity : AppCompatActivity() {
     private var previewView: PreviewView? = null
     private var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>? = null
 
+    private lateinit var img : ImageView
+
     private lateinit var qrCodeFoundButton: Button
     private var qrCode: String? = null
     private lateinit var camera : Camera
+
+    private lateinit var analyzer : QRCodeImageAnalyzer
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +61,19 @@ class ScanActivity : AppCompatActivity() {
         })
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        img = findViewById(R.id.img)
+        analyzer = QRCodeImageAnalyzer(object : QRCodeFoundListener {
+            override fun onQRCodeFound(_qrCode: String?) {
+                Log.d("test", "qr code found: $_qrCode")
+                qrCode = _qrCode
+                qrCodeFoundButton.visibility = View.VISIBLE
+            }
+
+            override fun qrCodeNotFound() {
+                Log.d("test", "qr code not found")
+                qrCodeFoundButton.visibility = View.INVISIBLE
+            }
+        }, img)
 
         requestCamera()
 
@@ -118,6 +139,7 @@ class ScanActivity : AppCompatActivity() {
     private fun bindCameraPreview(cameraProvider: ProcessCameraProvider) {
         previewView!!.preferredImplementationMode = PreviewView.ImplementationMode.SURFACE_VIEW
         val preview: Preview = Preview.Builder()
+            .setTargetResolution(Size(200, 200))
             .build()
         val cameraSelector = CameraSelector.Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -126,25 +148,12 @@ class ScanActivity : AppCompatActivity() {
         Log.d("test", "bindCameraPreview")
 
         val imageAnalysis : ImageAnalysis = ImageAnalysis.Builder()
-            .setTargetResolution(Size(1280, 720))
+            .setTargetResolution(Size(200, 200))
+            .setTargetRotation(ROTATION_90)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
 
-        imageAnalysis.setAnalyzer(
-            ContextCompat.getMainExecutor(this),
-            QRCodeImageAnalyzer(object : QRCodeFoundListener {
-                override fun onQRCodeFound(_qrCode: String?) {
-                    Log.d("test", "qr code found: $_qrCode")
-                    qrCode = _qrCode
-                    qrCodeFoundButton.visibility = View.VISIBLE
-                }
-
-                override fun qrCodeNotFound() {
-                    Log.d("test", "qr code not found")
-                    qrCodeFoundButton.visibility = View.INVISIBLE
-                }
-            })
-        )
+        imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), analyzer)
         Log.d("test", "after image analyzer created")
         camera = cameraProvider.bindToLifecycle(this as LifecycleOwner, cameraSelector, imageAnalysis, preview)
     }
