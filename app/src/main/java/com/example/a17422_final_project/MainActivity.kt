@@ -74,11 +74,19 @@ class MainActivity : AppCompatActivity() {
                 Log.d("after start activity", "step")
             }
 
+        findViewById<Button>(R.id.button4)
+            .setOnClickListener {
+                startActivity(Intent(this, ExerciseTask::class.java))
+                Log.d("after start activity", "exercise")
+            }
+
         findViewById<Button>(R.id.to_speech)
             .setOnClickListener {
                 startTaskStack(this, arrayListOf( Task(TaskType.SPEECH, 0, JSONObject()) ))
 //                startActivity(Intent(this, SpeechTask::class.java))
             }
+
+
 
 
         if (!Settings.canDrawOverlays(this)) {
