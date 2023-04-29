@@ -38,7 +38,8 @@ class ForegroundService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d("asd", "onStart$intent")
-        val window = Window(this)
+        fun callback() {}
+        val window = Window(this, ::callback)
         window.open()
         return super.onStartCommand(intent, flags, startId)
     }

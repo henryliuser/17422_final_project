@@ -1,9 +1,6 @@
 package com.example.a17422_final_project
 
-import android.Manifest
-import android.R.string
 import android.app.*
-import android.app.AlarmManager.RTC_WAKEUP
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -14,17 +11,10 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.widget.Button
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.a17422_final_project.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.json.JSONObject
 import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,19 +37,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun startService() {
-        // check if the user has already granted
-        // the Draw over other apps permission
-        if (Settings.canDrawOverlays(this)) {
-            // start the service based on the android version
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(Intent(this, ForegroundService::class.java))
-            } else {
-                startService(Intent(this, ForegroundService::class.java))
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -69,43 +46,53 @@ class MainActivity : AppCompatActivity() {
         /// TODO: uncomment
 
         createNotificationChannel("alarms", "alarms")
-        findViewById<Button>(R.id.button)
-            .setOnClickListener {
-                Log.d("BUTTONS", "User tapped the Supabutton")
-                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                val calendar = Calendar.getInstance()
-                val intent = Intent(this, AlarmHandler::class.java)
-                val pendingIntent = PendingIntent.getBroadcast(this, 1001, intent, PendingIntent.FLAG_IMMUTABLE)
-                val info = AlarmManager.AlarmClockInfo(calendar.timeInMillis + 10000, pendingIntent)
-                val intent2 = Intent(this, AlarmHandler::class.java)
-                val pendingIntent2 = PendingIntent.getBroadcast(this, 1001, intent2, PendingIntent.FLAG_IMMUTABLE)
+//        findViewById<Button>(R.id.button)
+//            .setOnClickListener {
+//                Log.d("BUTTONS", "User tapped the Supabutton")
+//                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//                val calendar = Calendar.getInstance()
+//                val intent = Intent(this, AlarmHandler::class.java)
+//                val pendingIntent = PendingIntent.getBroadcast(this, 1001, intent, PendingIntent.FLAG_IMMUTABLE)
+//                val info = AlarmManager.AlarmClockInfo(calendar.timeInMillis + 10000, pendingIntent)
+//                val intent2 = Intent(this, AlarmHandler::class.java)
+//                val pendingIntent2 = PendingIntent.getBroadcast(this, 1001, intent2, PendingIntent.FLAG_IMMUTABLE)
+//
+//                alarmManager.setAlarmClock(info, pendingIntent2)
+//            }
 
-                alarmManager.setAlarmClock(info, pendingIntent2)
-            }
-
-        findViewById<Button>(R.id.button2)
-            .setOnClickListener {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    startService()
-                }, 2000)
-            }
+//        findViewById<Button>(R.id.postDelayed)
+//            .setOnClickListener {
+//                Handler(Looper.getMainLooper()).postDelayed({
+//                    ForegroundService.start(this)
+//                }, 2000)
+//            }
 
         findViewById<Button>(R.id.button3)
             .setOnClickListener {
-                startActivity(Intent(this, StepActivity::class.java))
+                startTaskStack(this, arrayListOf( Task(TaskType.STEPS, 0, JSONObject()) ))
+//                startActivity(Intent(this, StepActivity::class.java))
                 Log.d("after start activity", "step")
             }
 
         findViewById<Button>(R.id.button4)
             .setOnClickListener {
-                startActivity(Intent(this, ScanActivity::class.java))
-                Log.d("after start activity", "scan")
+                startTaskStack(this, arrayListOf( Task(TaskType.EXERCISE, 5, JSONObject()) ))
+//                startActivity(Intent(this, ExerciseTask::class.java))
+                Log.d("after start activity", "exercise")
             }
 
         findViewById<Button>(R.id.to_speech)
             .setOnClickListener {
-                startActivity(Intent(this, SpeechTask::class.java))
+                startTaskStack(this, arrayListOf( Task(TaskType.SPEECH, 0, JSONObject()) ))
+//                startActivity(Intent(this, SpeechTask::class.java))
             }
+
+        findViewById<Button>(R.id.routine)
+            .setOnClickListener {
+//                startActivity(Intent(this, ))
+            }
+
+
 
 
         if (!Settings.canDrawOverlays(this)) {
@@ -119,16 +106,16 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, ActivityAlarmSet::class.java))
             }
 
-        findViewById<Button>(R.id.chainTask)
-            .setOnClickListener {
-                val stepParams = JSONObject()
-                stepParams.put("numSteps", 25)
-                val tasks = arrayOf(
-                    Task( TaskType.STEPS, stepParams ),
-                    Task( TaskType.SPEECH, JSONObject() )
-                )
-                startTaskStack(this, tasks.asIterable())
-            }
+//        findViewById<Button>(R.id.chainTask)
+//            .setOnClickListener {
+//                val stepParams = JSONObject()
+//                stepParams.put("numSteps", 10)
+//                val tasks = arrayListOf(
+//                    Task( TaskType.STEPS, 10, stepParams ),
+//                    Task( TaskType.SPEECH, 15, JSONObject() )
+//                )
+//                startTaskStack(this, tasks)
+//            }
     }
 
 
