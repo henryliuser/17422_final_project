@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.button3)
             .setOnClickListener {
-                startTaskStack(this, arrayListOf( Task(TaskType.STEPS, 0, JSONObject()) ))
+                startTaskStack(this, arrayListOf( Task(TaskType.STEPS, 5, JSONObject()) ))
 //                startActivity(Intent(this, StepActivity::class.java))
                 Log.d("after start activity", "step")
             }

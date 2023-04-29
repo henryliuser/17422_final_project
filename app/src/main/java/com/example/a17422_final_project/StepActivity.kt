@@ -20,25 +20,33 @@ import com.example.a17422_final_project.databinding.ActivityStepBinding
 import org.json.JSONObject
 
 
-class StepActivity : AppCompatActivity() {
+class StepActivity : AppCompatActivity(), TaskActivity {
 
     private lateinit var mAccel : Accelerometer
     private lateinit var binding: ActivityStepBinding
     private var steps : Int = 0
+    private var done : Boolean = false
 
+    override lateinit var timer : Timer
+    override lateinit var params : JSONObject
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityStepBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+    override fun getPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED)
         {
             Log.d("perms", "activity_recognition")
-            requestPermissions(arrayOf<String>(Manifest.permission.ACTIVITY_RECOGNITION), 0)
+            requestPermissions(arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), 0)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityStepBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        done = false
+
+        init(this, intent)
 
         val params = JSONObject(intent.getStringExtra("params")!!)
         mAccel = Accelerometer(this)
@@ -49,17 +57,8 @@ class StepActivity : AppCompatActivity() {
 
         // create a listener for accelerometer
         mAccel.setListener(object : Accelerometer.Listener {
-            //on translation method of accelerometer
-//            override fun onTranslation(tx: Float, ty: Float, ts: Float) {
-//                // set the color red if the device moves in positive x axis
-//                Log.d("accelerometer", "[%6.3f, %6.3f, %6.3f]".format(tx, ty, ts))
-//                if (tx > 1.0f) {
-//                    window.decorView.setBackgroundColor(Color.RED)
-//                } else if (tx < -1.0f) {
-//                    window.decorView.setBackgroundColor(Color.BLUE)
-//                }
-//            }
             override fun onTranslation() {
+                if (done) return
                 steps++
                 val tv1: TextView = findViewById(R.id.stepCount)
                 tv1.text = "Number of Steps Taken: $steps"
@@ -68,6 +67,8 @@ class StepActivity : AppCompatActivity() {
 
                 if (steps >= progressBar.max) {
                     tv1.text = "Done!"
+                    done = true
+                    destroy()
                     Handler(Looper.getMainLooper()).postDelayed({
                         finish()
                     }, 1500)
@@ -86,7 +87,4 @@ class StepActivity : AppCompatActivity() {
         mAccel.unregister()
     }
 
-//    override fun onBackInvoke() {
-//        super.onBackPressed()
-//    }
 }
