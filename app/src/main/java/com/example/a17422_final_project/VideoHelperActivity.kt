@@ -157,7 +157,7 @@ abstract class VideoHelperActivity : AppCompatActivity(), TaskActivity {
             .setTargetAspectRatio(AspectRatio.RATIO_4_3)
             .build()
         if (previewView != null) { //TODO: I added this
-            preview.setSurfaceProvider(previewView!!.getSurfaceProvider())
+            preview.setSurfaceProvider(previewView!!.createSurfaceProvider())
         }
         val cameraSelector: CameraSelector = CameraSelector.Builder()
             .requireLensFacing(lensFacing)
