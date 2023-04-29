@@ -1,5 +1,6 @@
 package com.example.a17422_final_project
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
@@ -12,6 +13,9 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.google.android.gms.vision.Frame
+import com.google.android.gms.vision.barcode.Barcode
+import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.qrcode.QRCodeMultiReader
@@ -23,31 +27,16 @@ interface QRCodeFoundListener {
     fun qrCodeNotFound()
 }
 
-class QRCodeImageAnalyzer(listener: QRCodeFoundListener, val img : ImageView) : ImageAnalysis.Analyzer {
+class QRCodeImageAnalyzer(listener: QRCodeFoundListener, val ctx : Context) : ImageAnalysis.Analyzer {
     private val listener: QRCodeFoundListener
     var _image : ImageProxy? = null
+    private var scanner = BarcodeDetector.Builder(ctx)
+        .setBarcodeFormats(Barcode.QR_CODE)
+        .build()
+
 
     init {
         this.listener = listener
-    }
-
-    fun Image.toBitmap(): Bitmap {
-        val yBuffer = planes[0].buffer // Y
-        val vuBuffer = planes[2].buffer // VU
-
-        val ySize = yBuffer.remaining()
-        val vuSize = vuBuffer.remaining()
-
-        val nv21 = ByteArray(ySize + vuSize)
-
-        yBuffer.get(nv21, 0, ySize)
-        vuBuffer.get(nv21, ySize, vuSize)
-
-        val yuvImage = YuvImage(nv21, ImageFormat.NV21, this.width, this.height, null)
-        val out = ByteArrayOutputStream()
-        yuvImage.compressToJpeg(Rect(0, 0, yuvImage.width, yuvImage.height), 50, out)
-        val imageBytes = out.toByteArray()
-        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
 
     fun ImageProxy.toBitmap(): Bitmap? {
@@ -195,41 +184,46 @@ class QRCodeImageAnalyzer(listener: QRCodeFoundListener, val img : ImageView) : 
         if (image.format == YUV_420_888 || image.format == YUV_422_888 || image.format == YUV_444_888) {
 
             val byteBuffer = image.planes[0].buffer
-            val matrix = Matrix()
 
+            var bm = image.toBitmap()!!
+            val rot = Matrix()
+            rot.postRotate(90f)
+            bm = Bitmap.createBitmap(bm, 0, 0, bm.width, bm.height, rot, true)
+            val frame = Frame.Builder().setBitmap(bm).build()
+            val res = scanner.detect(frame)
+            if (res.size() != 0)
+                Log.d("scanner detect", res.valueAt(0).displayValue)
 
-            val imageData = ByteArray(byteBuffer.capacity())
+//            val imageData = ByteArray(byteBuffer.capacity())
 //            byteBuffer[imageData]
 //            Array<Byte>(imageData)
 //            val bitmapImage = BitmapFactory.decodeByteArray(imageData, 0, imageData.size, null)
 
-            val bm = image.toBitmap()
-            val bm2 = Bitmap.createBitmap(bm!!, 0, 0, 300, 300)
-            img.setImageBitmap(bm2)
+
 //            Bitmap.createScaledBitmap()
-            val source = PlanarYUVLuminanceSource(
-                imageData,
-                image.width, image.height,
-                0, 0,
-                image.width, image.height,
-                false
-            )
-            var binaryBitmap = BinaryBitmap(HybridBinarizer(source))
-            binaryBitmap = binaryBitmap.crop(0,0,300,300)
+//            val source = PlanarYUVLuminanceSource(
+//                imageData,
+//                image.width, image.height,
+//                0, 0,
+//                image.width, image.height,
+//                false
+//            )
+//            var binaryBitmap = BinaryBitmap(HybridBinarizer(source))
+//            binaryBitmap = binaryBitmap.crop(0,0,300,300)
 //            binaryBitmap = binaryBitmap.rotateCounterClockwise()
-            try {
-                val result = QRCodeMultiReader().decode(binaryBitmap)
-                listener.onQRCodeFound(result.text)
-            } catch (e: FormatException) {
-                Log.d("exception:", "format")
-                listener.qrCodeNotFound()
-            } catch (e: ChecksumException) {
-                Log.d("exception:", "checksum")
-                listener.qrCodeNotFound()
-            } catch (e: NotFoundException) {
-                Log.d("exception:", "not found")
-                listener.qrCodeNotFound()
-            }
+//            try {
+//                val result = QRCodeMultiReader().decode(binaryBitmap)
+//                listener.onQRCodeFound(result.text)
+//            } catch (e: FormatException) {
+//                Log.d("exception:", "format")
+//                listener.qrCodeNotFound()
+//            } catch (e: ChecksumException) {
+//                Log.d("exception:", "checksum")
+//                listener.qrCodeNotFound()
+//            } catch (e: NotFoundException) {
+//                Log.d("exception:", "not found")
+//                listener.qrCodeNotFound()
+//            }
         }
         image.close()
     }

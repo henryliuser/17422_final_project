@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.ui.AppBarConfiguration
 import com.example.a17422_final_project.databinding.ActivityScanBinding
+import com.google.android.gms.vision.barcode.Barcode
+import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutionException
 
@@ -73,9 +75,12 @@ class ScanActivity : AppCompatActivity() {
                 Log.d("test", "qr code not found")
                 qrCodeFoundButton.visibility = View.INVISIBLE
             }
-        }, img)
+        }, this)
 
         requestCamera()
+
+
+
 
 
 //        setSupportActionBar(binding.toolbar)
