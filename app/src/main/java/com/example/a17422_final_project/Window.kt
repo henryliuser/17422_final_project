@@ -71,8 +71,8 @@ class Window(  // declaring required variables
             context,
             R.raw.alarm1,
             AudioAttributes.Builder().
-                setUsage(USAGE_ALARM).
-                build(),
+            setUsage(USAGE_ALARM).
+            build(),
             audioManager.generateAudioSessionId()
         )
         mPlayer.isLooping = true

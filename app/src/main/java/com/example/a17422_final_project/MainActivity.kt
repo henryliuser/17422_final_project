@@ -69,14 +69,14 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.button3)
             .setOnClickListener {
-                startTaskStack(this, arrayListOf( Task(TaskType.STEPS, 0, JSONObject()) ))
+                startTaskStack(this, arrayListOf( Task(TaskType.STEPS, 5, JSONObject()) ))
 //                startActivity(Intent(this, StepActivity::class.java))
                 Log.d("after start activity", "step")
             }
 
         findViewById<Button>(R.id.button4)
             .setOnClickListener {
-                startTaskStack(this, arrayListOf( Task(TaskType.EXERCISE, 0, JSONObject()) ))
+                startTaskStack(this, arrayListOf( Task(TaskType.EXERCISE, 5, JSONObject()) ))
 //                startActivity(Intent(this, ExerciseTask::class.java))
                 Log.d("after start activity", "exercise")
             }
@@ -86,6 +86,13 @@ class MainActivity : AppCompatActivity() {
                 startTaskStack(this, arrayListOf( Task(TaskType.SPEECH, 0, JSONObject()) ))
 //                startActivity(Intent(this, SpeechTask::class.java))
             }
+
+        findViewById<Button>(R.id.routine)
+            .setOnClickListener {
+//                startActivity(Intent(this, ))
+            }
+
+
 
 
 
