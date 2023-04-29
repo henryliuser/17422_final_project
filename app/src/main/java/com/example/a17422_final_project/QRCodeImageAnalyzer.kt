@@ -21,7 +21,7 @@ class QRCodeImageAnalyzer(listener: QRCodeFoundListener) : ImageAnalysis.Analyze
     }
 
     override fun analyze(image: ImageProxy) {
-        Log.d("test", "in analyzer")
+        Log.d("test", "in analyzer: $image")
         if (image.format == YUV_420_888 || image.format == YUV_422_888 || image.format == YUV_444_888) {
             val byteBuffer = image.planes[0].buffer
             val imageData = ByteArray(byteBuffer.capacity())
@@ -35,14 +35,17 @@ class QRCodeImageAnalyzer(listener: QRCodeFoundListener) : ImageAnalysis.Analyze
             )
             val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
             try {
-                Log.d("test", "found QR code")
                 val result = QRCodeMultiReader().decode(binaryBitmap)
+                Log.d("res", "$result")
                 listener.onQRCodeFound(result.text)
             } catch (e: FormatException) {
+                Log.d("exception:", "format")
                 listener.qrCodeNotFound()
             } catch (e: ChecksumException) {
+                Log.d("exception:", "checksum")
                 listener.qrCodeNotFound()
             } catch (e: NotFoundException) {
+                Log.d("exception:", "not found")
                 listener.qrCodeNotFound()
             }
         }

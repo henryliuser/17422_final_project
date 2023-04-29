@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.CameraX
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -34,6 +35,7 @@ class ScanActivity : AppCompatActivity() {
 
     private lateinit var qrCodeFoundButton: Button
     private var qrCode: String? = null
+    private lateinit var camera : Camera
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,7 +125,7 @@ class ScanActivity : AppCompatActivity() {
         preview.setSurfaceProvider(previewView!!.createSurfaceProvider())
         Log.d("test", "bindCameraPreview")
 
-        val imageAnalysis = ImageAnalysis.Builder()
+        val imageAnalysis : ImageAnalysis = ImageAnalysis.Builder()
             .setTargetResolution(Size(1280, 720))
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
@@ -132,7 +134,7 @@ class ScanActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(this),
             QRCodeImageAnalyzer(object : QRCodeFoundListener {
                 override fun onQRCodeFound(_qrCode: String?) {
-                    Log.d("test", "qr code found")
+                    Log.d("test", "qr code found: $_qrCode")
                     qrCode = _qrCode
                     qrCodeFoundButton.visibility = View.VISIBLE
                 }
@@ -144,7 +146,6 @@ class ScanActivity : AppCompatActivity() {
             })
         )
         Log.d("test", "after image analyzer created")
-        val camera: Camera =
-            cameraProvider.bindToLifecycle(this as LifecycleOwner, cameraSelector, preview)
+        camera = cameraProvider.bindToLifecycle(this as LifecycleOwner, cameraSelector, imageAnalysis, preview)
     }
 }
