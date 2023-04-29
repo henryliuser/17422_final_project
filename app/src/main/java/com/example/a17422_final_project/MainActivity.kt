@@ -69,14 +69,14 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.button3)
             .setOnClickListener {
-                startTaskStack(this, arrayListOf( Task(TaskType.STEPS, 3, JSONObject()) ))
+                startTaskStack(this, arrayListOf( Task(TaskType.STEPS, 0, JSONObject()) ))
 //                startActivity(Intent(this, StepActivity::class.java))
                 Log.d("after start activity", "step")
             }
 
         findViewById<Button>(R.id.to_speech)
             .setOnClickListener {
-                startTaskStack(this, arrayListOf( Task(TaskType.SPEECH, 3, JSONObject()) ))
+                startTaskStack(this, arrayListOf( Task(TaskType.SPEECH, 0, JSONObject()) ))
 //                startActivity(Intent(this, SpeechTask::class.java))
             }
 
@@ -95,9 +95,9 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.chainTask)
             .setOnClickListener {
                 val stepParams = JSONObject()
-                stepParams.put("numSteps", 25)
+                stepParams.put("numSteps", 10)
                 val tasks = arrayListOf(
-                    Task( TaskType.STEPS, 3, stepParams ),
+                    Task( TaskType.STEPS, 10, stepParams ),
                     Task( TaskType.SPEECH, 15, JSONObject() )
                 )
                 startTaskStack(this, tasks)

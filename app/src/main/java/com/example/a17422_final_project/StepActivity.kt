@@ -25,8 +25,9 @@ class StepActivity : AppCompatActivity(), TaskActivity {
     private lateinit var mAccel : Accelerometer
     private lateinit var binding: ActivityStepBinding
     private var steps : Int = 0
+    private var done : Boolean = false
 
-    override val timer = Timer()
+    override lateinit var timer : Timer
     override lateinit var params : JSONObject
 
     override fun getPermissions() {
@@ -43,6 +44,7 @@ class StepActivity : AppCompatActivity(), TaskActivity {
         super.onCreate(savedInstanceState)
         binding = ActivityStepBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        done = false
 
         init(this, intent)
 
@@ -56,6 +58,7 @@ class StepActivity : AppCompatActivity(), TaskActivity {
         // create a listener for accelerometer
         mAccel.setListener(object : Accelerometer.Listener {
             override fun onTranslation() {
+                if (done) return
                 steps++
                 val tv1: TextView = findViewById(R.id.stepCount)
                 tv1.text = "Number of Steps Taken: $steps"
@@ -64,8 +67,9 @@ class StepActivity : AppCompatActivity(), TaskActivity {
 
                 if (steps >= progressBar.max) {
                     tv1.text = "Done!"
+                    done = true
+                    destroy()
                     Handler(Looper.getMainLooper()).postDelayed({
-                        destroy()
                         finish()
                     }, 1500)
                 }

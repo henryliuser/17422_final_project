@@ -75,17 +75,29 @@ class Check(val task : Task) {
     }}
 }
 
-class Timer {
-    fun start(ctx : Context, intent : Intent, timeLimit : Int) {
-        Handler(Looper.getMainLooper()).postDelayed( {
-            intent.flags = FLAG_ACTIVITY_REORDER_TO_FRONT
-            ctx.startActivity(intent)
-            ForegroundService.start(ctx)
-            start(ctx, intent, timeLimit)
-        }, timeLimit * 1000L )
+class Timer(ctx : Context, intent : Intent, private val timeLimit : Int) {
+    companion object {
+        var nextId : Long = 0
+    }
+
+    private val id = ++nextId
+    private val handler = Handler(Looper.getMainLooper())
+    private val runner = Runnable {
+        Log.d("timer ring", "$timeLimit")
+        intent.flags = FLAG_ACTIVITY_REORDER_TO_FRONT
+        ctx.startActivity(intent)
+        val window = Window(ctx, ::start)
+        window.open()
+    }
+
+    fun start() {
+        if (timeLimit == 0) return  // no timer
+        Log.d("START TIMER", "$id")
+        handler.postDelayed( runner, timeLimit * 1000L )
     }
     fun stop() {
-        Handler(Looper.getMainLooper()).removeCallbacksAndMessages(null)
+        Log.d("STOP TIMER", "$id")
+        handler.removeCallbacks(runner)
     }
 }
 
@@ -149,15 +161,16 @@ class Alarm {
 }
 
 interface TaskActivity {
-    val timer : Timer
+    var timer : Timer
     var params : JSONObject
 
     abstract fun getPermissions()
     fun init(ctx : Context, intent : Intent) {
         Log.d("init TaskActivity", "$ctx | ${intent.extras}")
-        this.getPermissions()
-        timer.start(ctx, intent, intent.getIntExtra("timeLimit", 15))
+        getPermissions()
         params = JSONObject( intent.getStringExtra("params")!! )
+        timer = Timer(ctx, intent, intent.getIntExtra("timeLimit", 15))
+        timer.start()
     }
 
     fun destroy() {

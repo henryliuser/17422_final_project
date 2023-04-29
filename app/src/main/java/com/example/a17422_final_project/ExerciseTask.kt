@@ -23,7 +23,7 @@ class ExerciseTask : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
         {
-            requestPermissions(arrayOf<String>(Manifest.permission.RECORD_AUDIO), 1)
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), 1)
         }
 
     }
