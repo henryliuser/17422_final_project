@@ -11,15 +11,6 @@ class ExerciseTask : VideoHelperActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = TaskExerciseBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        // request permission
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
-        {
-            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), 1)
-        }
     }
 
     override fun setProcessor(): PoseDetectorProcessor {

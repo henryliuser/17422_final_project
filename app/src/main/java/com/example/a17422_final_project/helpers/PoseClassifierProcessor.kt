@@ -57,18 +57,15 @@ class PoseClassifierProcessor @WorkerThread constructor(context: Context, isStre
         val poseSamples: MutableList<PoseSample> = ArrayList()
         try {
             val reader = BufferedReader(
-//                InputStreamReader(context.assets.open(POSE_SAMPLES_FILE))
                     InputStreamReader(
                         context.resources.openRawResource(
                             R.raw.fitness_pose_samples
                         )
-//                InputStream ins = getResources().openRawResource(
-//                    getResources().getIdentifier("FILENAME_WITHOUT_EXTENSION",
-//                        "raw", getPackageName()));
+                    )
             )
             var csvLine = reader.readLine()
             while (csvLine != null) {
-                // If line is not a valid {@link PoseSample}, we'll get null and skip adding to the list.
+                // If line is notg a valid {@link PoseSample}, we'll get null and skip adding to the list.
                 val poseSample = PoseSample.getPoseSample(csvLine, ",")
                 if (poseSample != null) {
                     poseSamples.add(poseSample)
