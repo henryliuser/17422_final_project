@@ -75,6 +75,8 @@ class ScanActivity : AppCompatActivity() {
             }
         }, img)
 
+//        startActivity(actions.intent.GET_BARCODE)
+
         requestCamera()
 
 
@@ -139,7 +141,7 @@ class ScanActivity : AppCompatActivity() {
     private fun bindCameraPreview(cameraProvider: ProcessCameraProvider) {
         previewView!!.preferredImplementationMode = PreviewView.ImplementationMode.SURFACE_VIEW
         val preview: Preview = Preview.Builder()
-            .setTargetResolution(Size(200, 200))
+            .setTargetResolution(Size(500, 500))
             .build()
         val cameraSelector = CameraSelector.Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -148,7 +150,7 @@ class ScanActivity : AppCompatActivity() {
         Log.d("test", "bindCameraPreview")
 
         val imageAnalysis : ImageAnalysis = ImageAnalysis.Builder()
-            .setTargetResolution(Size(200, 200))
+            .setTargetResolution(Size(500, 500))
             .setTargetRotation(ROTATION_90)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
