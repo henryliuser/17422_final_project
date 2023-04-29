@@ -18,6 +18,8 @@ import java.util.TreeMap
 
 class Globals {
     companion object {
+        var poseCount = 0
+
         var alarms = TreeMap<String, Alarm>()  // deterministic alphabetical order
 
         fun writeAlarms(ctx : Context) {

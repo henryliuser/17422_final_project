@@ -9,7 +9,8 @@ import androidx.core.content.ContextCompat.startActivity
 
 enum class TaskType(val key: Int) {
     STEPS(0),
-    SPEECH(1);
+    SPEECH(1),
+    EXERCISE(2);
     companion object {
         private val map = TaskType.values().associateBy(TaskType::key)
         operator fun get(id: Int) = map[id]!!

@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.graphics.*
 import android.media.Image
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Surface
 import android.view.View
@@ -15,6 +17,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.core.os.postDelayed
 import androidx.lifecycle.Observer
 import com.example.a17422_final_project.databinding.TaskExerciseBinding
 import com.example.a17422_final_project.helpers.GraphicOverlay
@@ -22,13 +25,14 @@ import com.example.a17422_final_project.helpers.PoseDetectorProcessor
 import com.example.a17422_final_project.helpers.VisionBaseProcessor
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.common.util.concurrent.ListenableFuture
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 
-abstract class VideoHelperActivity : AppCompatActivity() {
+abstract class VideoHelperActivity : AppCompatActivity(), TaskActivity {
 
     protected lateinit var previewView: PreviewView
     protected lateinit var graphicOverlay: GraphicOverlay
@@ -40,6 +44,21 @@ abstract class VideoHelperActivity : AppCompatActivity() {
     private lateinit var imageAnalysis: ImageAnalysis
 
     private lateinit var binding: TaskExerciseBinding
+
+    override lateinit var timer : Timer
+    override lateinit var params : JSONObject
+
+    override fun getPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("test", "don't have permission, getting it")
+            requestPermissions(arrayOf<String>(Manifest.permission.CAMERA), 1001 ) //REQUEST_CAMERA
+            Log.d("test", "got permission")
+//            initSource()// TODO: I added this
+        } else {
+            Log.d("test", "already have permission")
+            initSource()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,24 +78,43 @@ abstract class VideoHelperActivity : AppCompatActivity() {
         outputTextView = tv
         addFaceButton = button
         previewView = prevView
+        Globals.poseCount = 0
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(applicationContext)
         processor = setProcessor()
+        val handler = Handler(Looper.getMainLooper())
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("test", "don't have permission, getting it")
-            requestPermissions(arrayOf<String>(Manifest.permission.CAMERA), 1001 ) //REQUEST_CAMERA
-            Log.d("test", "got permission")
-//            initSource()// TODO: I added this
-        } else {
-            Log.d("test", "already have permission")
-            initSource()
+        init(this, intent)
+        var totalReps = 5
+        if (params.has("totalReps"))
+            totalReps = params.getInt("totalReps")
+
+
+
+        fun r() {
+            outputTextView.text = "${Globals.poseCount}"
+            if (Globals.poseCount >= totalReps) {
+                handler.removeCallbacksAndMessages(null)
+                outputTextView.text = "Done!"
+                handler.postDelayed({
+                    destroy()
+                    finish()
+                }, 1000)
+            }
+            else
+            handler.postDelayed( {
+                r()
+            }, 500)
         }
+        r()
+
+
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        destroy()
         if (processor != null) {
             processor.stop()
         }
@@ -96,7 +134,7 @@ abstract class VideoHelperActivity : AppCompatActivity() {
     }
 
     protected fun setOutputText(text: String?) {
-        outputTextView!!.text = text
+        outputTextView!!.text = "$Globals.poseCount"
     }
 
     private fun initSource() {
@@ -206,7 +244,7 @@ abstract class VideoHelperActivity : AppCompatActivity() {
 
     protected abstract fun setProcessor(): VisionBaseProcessor<PoseDetectorProcessor.PoseWithClassification?>
     fun makeAddFaceVisible() {
-        addFaceButton!!.visibility = 1 //View.VISIBLE
+        addFaceButton!!.visibility = View.VISIBLE
     }
 
     fun onAddFaceClicked(view: View?) {}

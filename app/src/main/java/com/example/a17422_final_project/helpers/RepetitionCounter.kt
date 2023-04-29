@@ -1,5 +1,8 @@
 package com.example.a17422_final_project.helpers
 
+import android.util.Log
+import com.example.a17422_final_project.Globals
+
 /*
  * Copyright 2020 Google LLC. All rights reserved.
  *
@@ -24,6 +27,7 @@ class RepetitionCounter @JvmOverloads constructor(
     private val enterThreshold: Float = DEFAULT_ENTER_THRESHOLD,
     private val exitThreshold: Float = DEFAULT_EXIT_THRESHOLD
 ) {
+
     var numRepeats = 0
         private set
     private var poseEntered = false
@@ -42,6 +46,8 @@ class RepetitionCounter @JvmOverloads constructor(
         }
         if (poseConfidence < exitThreshold) {
             numRepeats++
+            Globals.poseCount = numRepeats
+            Log.d("posecount", "${Globals.poseCount}")
             poseEntered = false
         }
         return numRepeats
@@ -50,7 +56,7 @@ class RepetitionCounter @JvmOverloads constructor(
     companion object {
         // These thresholds can be tuned in conjunction with the Top K values in {@link PoseClassifier}.
         // The default Top K value is 10 so the range here is [0-10].
-        private const val DEFAULT_ENTER_THRESHOLD = 6f
-        private const val DEFAULT_EXIT_THRESHOLD = 4f
+        private const val DEFAULT_ENTER_THRESHOLD = 8f
+        private const val DEFAULT_EXIT_THRESHOLD = 6f
     }
 }

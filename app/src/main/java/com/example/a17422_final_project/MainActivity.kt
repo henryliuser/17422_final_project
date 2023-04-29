@@ -46,26 +46,26 @@ class MainActivity : AppCompatActivity() {
         /// TODO: uncomment
 
         createNotificationChannel("alarms", "alarms")
-        findViewById<Button>(R.id.button)
-            .setOnClickListener {
-                Log.d("BUTTONS", "User tapped the Supabutton")
-                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                val calendar = Calendar.getInstance()
-                val intent = Intent(this, AlarmHandler::class.java)
-                val pendingIntent = PendingIntent.getBroadcast(this, 1001, intent, PendingIntent.FLAG_IMMUTABLE)
-                val info = AlarmManager.AlarmClockInfo(calendar.timeInMillis + 10000, pendingIntent)
-                val intent2 = Intent(this, AlarmHandler::class.java)
-                val pendingIntent2 = PendingIntent.getBroadcast(this, 1001, intent2, PendingIntent.FLAG_IMMUTABLE)
+//        findViewById<Button>(R.id.button)
+//            .setOnClickListener {
+//                Log.d("BUTTONS", "User tapped the Supabutton")
+//                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//                val calendar = Calendar.getInstance()
+//                val intent = Intent(this, AlarmHandler::class.java)
+//                val pendingIntent = PendingIntent.getBroadcast(this, 1001, intent, PendingIntent.FLAG_IMMUTABLE)
+//                val info = AlarmManager.AlarmClockInfo(calendar.timeInMillis + 10000, pendingIntent)
+//                val intent2 = Intent(this, AlarmHandler::class.java)
+//                val pendingIntent2 = PendingIntent.getBroadcast(this, 1001, intent2, PendingIntent.FLAG_IMMUTABLE)
+//
+//                alarmManager.setAlarmClock(info, pendingIntent2)
+//            }
 
-                alarmManager.setAlarmClock(info, pendingIntent2)
-            }
-
-        findViewById<Button>(R.id.postDelayed)
-            .setOnClickListener {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    ForegroundService.start(this)
-                }, 2000)
-            }
+//        findViewById<Button>(R.id.postDelayed)
+//            .setOnClickListener {
+//                Handler(Looper.getMainLooper()).postDelayed({
+//                    ForegroundService.start(this)
+//                }, 2000)
+//            }
 
         findViewById<Button>(R.id.button3)
             .setOnClickListener {
@@ -76,7 +76,8 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.button4)
             .setOnClickListener {
-                startActivity(Intent(this, ExerciseTask::class.java))
+                startTaskStack(this, arrayListOf( Task(TaskType.EXERCISE, 0, JSONObject()) ))
+//                startActivity(Intent(this, ExerciseTask::class.java))
                 Log.d("after start activity", "exercise")
             }
 
@@ -100,16 +101,16 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, ActivityAlarmSet::class.java))
             }
 
-        findViewById<Button>(R.id.chainTask)
-            .setOnClickListener {
-                val stepParams = JSONObject()
-                stepParams.put("numSteps", 10)
-                val tasks = arrayListOf(
-                    Task( TaskType.STEPS, 10, stepParams ),
-                    Task( TaskType.SPEECH, 15, JSONObject() )
-                )
-                startTaskStack(this, tasks)
-            }
+//        findViewById<Button>(R.id.chainTask)
+//            .setOnClickListener {
+//                val stepParams = JSONObject()
+//                stepParams.put("numSteps", 10)
+//                val tasks = arrayListOf(
+//                    Task( TaskType.STEPS, 10, stepParams ),
+//                    Task( TaskType.SPEECH, 15, JSONObject() )
+//                )
+//                startTaskStack(this, tasks)
+//            }
     }
 
 

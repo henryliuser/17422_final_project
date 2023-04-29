@@ -102,7 +102,6 @@ class PoseClassifierProcessor @WorkerThread constructor(context: Context, isStre
         Preconditions.checkState(Looper.myLooper() != Looper.getMainLooper())
         val result: MutableList<String?> = ArrayList()
         var classification = poseClassifier!!.classify(pose)
-        Log.d("classify()", classification.toString())
 
         // Update {@link RepetitionCounter}s if {@code isStreamMode}.
         if (isStreamMode) {

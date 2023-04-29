@@ -59,7 +59,6 @@ class PoseDetectorProcessor(
         // image and that of the viewfinder have to match. Which is why the dimensions of
         // the analyzed image are reversed if its rotation information is 90 or 270.
         val reverseDimens = rotation == 90 || rotation == 270
-        Log.d(TAG, "rotation: $rotation")
         val width: Int
         val height: Int
         if (reverseDimens) {

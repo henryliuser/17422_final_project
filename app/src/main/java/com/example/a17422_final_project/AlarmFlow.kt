@@ -27,6 +27,7 @@ class Task(val type : TaskType, val timeLimit : Int, val params : JSONObject) {
         val intent = when (type) {
             TaskType.STEPS  -> Intent(ctx, StepActivity::class.java)
             TaskType.SPEECH -> Intent(ctx, SpeechTask::class.java)
+            TaskType.EXERCISE -> Intent(ctx, ExerciseTask::class.java)
         }
         intent.putExtra("timeLimit", timeLimit)
         return intent.putExtra("params", params.toString())

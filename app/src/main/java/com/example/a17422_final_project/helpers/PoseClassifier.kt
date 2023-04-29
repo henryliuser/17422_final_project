@@ -86,7 +86,6 @@ class PoseClassifier @JvmOverloads constructor(
             )
         }
         // Retrieve top K poseSamples by least distance to remove outliers.
-        Log.d("poseSamples", poseSamples.toString())
         for (poseSample in poseSamples) {
             val sampleEmbedding = poseSample.embedding
             var originalMax = 0f
@@ -147,7 +146,6 @@ class PoseClassifier @JvmOverloads constructor(
         }
         for (sampleDistances in meanDistances) {
             val className = sampleDistances.first.className
-            Log.d("incrementClassConfidence", "hello")
             result.incrementClassConfidence(className)
         }
         return result
