@@ -22,7 +22,6 @@
         layout="@layout/content_scan"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
@@ -30,10 +29,8 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/activity_main_previewView"
         android:layout_width="0dp"
-        android:layout_height="488dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="9dp"
-        app:layout_constraintEnd_toEndOf="@+id/activity_main_qrCodeFoundButton"
+        android:layout_height="482dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_main_qrCodeFoundButton" />
@@ -48,12 +45,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="194dp"
-        android:layout_height="0dp"
+    <TextView
+        android:id="@+id/current"
+        android:layout_width="105dp"
+        android:layout_height="64dp"
+        android:text="Current:"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_main_previewView" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="106dp"
+        android:layout_height="58dp"
+        android:layout_marginEnd="70dp"
+        android:text="Time Left:"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_main_previewView"
+        app:layout_constraintVertical_bias="0.51" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

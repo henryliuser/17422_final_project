@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.routine)
             .setOnClickListener {
-//                startActivity(Intent(this, ))
+                startActivity(Intent(this, ScanActivity::class.java))
             }
 
 

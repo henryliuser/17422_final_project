@@ -2,14 +2,19 @@ package com.example.a17422_final_project
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.Size
 import android.view.Surface.ROTATION_90
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -19,12 +24,15 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.core.os.postDelayed
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.ui.AppBarConfiguration
 import com.example.a17422_final_project.databinding.ActivityScanBinding
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.google.common.util.concurrent.ListenableFuture
+import java.time.Duration
+import java.time.LocalTime
 import java.util.concurrent.ExecutionException
 
 
@@ -37,7 +45,6 @@ class ScanActivity : AppCompatActivity() {
     private var previewView: PreviewView? = null
     private var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>? = null
 
-    private lateinit var img : ImageView
 
     private lateinit var qrCodeFoundButton: Button
     private var qrCode: String? = null
@@ -45,13 +52,41 @@ class ScanActivity : AppCompatActivity() {
 
     private lateinit var analyzer : QRCodeImageAnalyzer
 
+    private lateinit var current : TextView
+    private lateinit var time : TextView
 
+    private var activities = ArrayList<String>()
+    private var times = ArrayList<Int>()
 
+    private var scanIdx = 0
+    private lateinit var initialTime : LocalTime
+    private var targetTimes = ArrayList<LocalTime>()
+    var timeLeft = 0
+    var handler = Handler(Looper.getMainLooper())
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+
+        // populate the activities/times
+        activities = arrayListOf(
+            "Shower",
+            "Breakfast",
+            "Exercise",
+        )
+        times = arrayListOf(
+            10,
+            5,
+            5,
+        )
+
+        current = findViewById(R.id.current)
+        time = findViewById(R.id.time)
 
         previewView = findViewById(R.id.activity_main_previewView)
 
@@ -63,11 +98,31 @@ class ScanActivity : AppCompatActivity() {
         })
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        img = findViewById(R.id.img)
         analyzer = QRCodeImageAnalyzer(object : QRCodeFoundListener {
             override fun onQRCodeFound(_qrCode: String?) {
                 Log.d("test", "qr code found: $_qrCode")
                 qrCode = _qrCode
+                if (scanIdx == 0) {
+                    initialTime = LocalTime.now()
+
+                    var cur = Duration.ZERO
+                    times.forEach {
+                        val x = Duration.ofSeconds(it.toLong())
+                        targetTimes.add(initialTime.plus(cur).plus(x))
+                        cur += x
+                    }
+                    current.text = "Current:\n${activities.removeFirst()}"
+                    timeLeft = times.removeFirst()
+                    time.text = "Time Left:\n${timeLeft}"
+
+                }
+
+//                Log.d("")
+                if (scanIdx > 0 && activities.isNotEmpty() && _qrCode == activities.first()) {
+                    advance()
+                }
+                scanIdx++
+
                 qrCodeFoundButton.visibility = View.VISIBLE
             }
 
@@ -80,7 +135,23 @@ class ScanActivity : AppCompatActivity() {
         requestCamera()
 
 
+        fun updateTimer() {
+            if (timeLeft > 0) timeLeft--
+            time.text = "Time Left:\n${timeLeft}"
+            if (activities.isEmpty() && timeLeft == 0) {
+                current.text = "Done!"
+                handler.removeCallbacksAndMessages(null)
+                handler.postDelayed( {
+                    finish()
+                }, 1000)
+                return
+            }
+            handler.postDelayed( {
+                updateTimer()
 
+            }, 1000)
+        }
+        updateTimer()
 
 
 //        setSupportActionBar(binding.toolbar)
@@ -108,6 +179,39 @@ class ScanActivity : AppCompatActivity() {
             Log.d("test", "already had permission to use camera")
             startCamera()
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun advance() {
+        Log.d("advance", "hello")
+        val act = activities.removeFirst()
+        val t = times.removeFirst()
+        val target = targetTimes.first()
+        targetTimes.removeFirst()
+
+
+        if (activities.isEmpty()) {
+            current.text = "Done!"
+            Handler(Looper.getMainLooper()).postDelayed( {
+                finish()
+            }, 1000)
+            return
+        }
+
+        current.text = "Current:\n${act}"
+        val now = LocalTime.now()
+        if (now > target) {
+            activities.removeLast()
+            val end = targetTimes.last()
+            timeLeft = Duration.between(now, end).seconds.toInt()
+            time.text = "Time Left:\n${timeLeft} seconds"
+        }
+        else {  // on time
+            timeLeft = Duration.between(target,now).seconds.toInt()
+            time.text = "Time Left:\n${timeLeft} seconds"
+        }
+
+
     }
 
     override fun onRequestPermissionsResult(

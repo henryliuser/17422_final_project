@@ -191,8 +191,12 @@ class QRCodeImageAnalyzer(listener: QRCodeFoundListener, val ctx : Context) : Im
             bm = Bitmap.createBitmap(bm, 0, 0, bm.width, bm.height, rot, true)
             val frame = Frame.Builder().setBitmap(bm).build()
             val res = scanner.detect(frame)
-            if (res.size() != 0)
-                Log.d("scanner detect", res.valueAt(0).displayValue)
+            if (res.size() != 0) {
+                val s = res.valueAt(0).displayValue
+                Log.d("scanner detect", s)
+                listener.onQRCodeFound(s)
+            }
+
 
 //            val imageData = ByteArray(byteBuffer.capacity())
 //            byteBuffer[imageData]
